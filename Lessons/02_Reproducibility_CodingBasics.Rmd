@@ -5,6 +5,7 @@ date: "Fall 2024"
 output: pdf_document
 ---
 
+
 ## Objectives
 
 1.  Discuss the benefits and approach for reproducible data analysis
@@ -267,13 +268,13 @@ For now, here are some ways to access the help tools in R:
 
 -   Parentheses and quotation marks appear in pairs when typed into RStudio.
 
--   When typing long names, use the `tab` key partway through the name to generate autocomplete options.
+-   When typing long names, use the `tab` key partway through the name to generate auto-complete options.
 
 -   In the upper right corner of the editor is a button with multiple horizontal lines. Clicking this button will bring up the outline of the document. Headings in the outline are determined by how you've defined them in the document.
 
 R Markdown and R script files can be organized into sections. Sections can be expanded or collapsed as desired via three options:
 
--   On the lefthand side of the editor, you will see arrows to the right of the line numbers. Clicking on these arrows will collapse or expand the section. When a section is collapsed, a double-arrow box will appear within the script. You can also click on this box directly to expand the section.
+-   On the left hand side of the editor, you will see arrows to the right of the line numbers. Clicking on these arrows will collapse or expand the section. When a section is collapsed, a double-arrow box will appear within the script. You can also click on this box directly to expand the section.
 
 -   Navigating from the menu bar, the Edit menu will bring you to the option "Folding". This option can be especially helpful when you first open a file and decide if you want to navigate between sections or run sections sequentially.
 
