@@ -87,7 +87,8 @@ sort(summary(Neonics$Effect))
 
 ```{r Summary on Common Name}
 # Summary function is still used.
-# Since we need the 6 most commonly studied species (or the top 6 max), an argument maxsum= 6 is added inside the summary function.
+# Since we need the 6 most commonly studied species (or the top 6 max)
+# an argument maxsum= 6 is added inside the summary function.
 summary(Neonics$Species.Common.Name, maxsum = 6)
 summary(Neonics$Species.Common.Name, maxsum = 7)
 # I also used 7 to test out, since the most common is categorized as Other. 
@@ -130,7 +131,7 @@ geom_freqpoly(binwidth = 1)+
 
 ```{r Same Graph with Color Aesthetics by Different Test.Location}
 # load the dataframe into the plot and set x axis as Publication year
-# set bin width to 1 and set color by locations, along with the chart tile and axis titles.
+# set bin width to 1 and set color by locations, along with the chart and axis titles.
 # x and y kept the same
 ggplot(Neonics, aes(x = Publication.Year, color = Test.Location)) +
   geom_freqpoly(binwidth = 1) +
@@ -148,7 +149,8 @@ Interpret this graph. What are the most common test locations, and do they diffe
 [**TIP**: Add `theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))` to the end of your plot command to rotate and align the X-axis labels...]
 
 ```{r Bar Graph with Endpoint counts}
-# similar approach as previous one, use ggplot and then add geom_bar as bar gragh, with X axis being Endpoints
+# similar approach as previous one, use ggplot and then add geom_bar as bar gragh
+# X axis being Endpoints
 # y auto becomes Count.
 # add the tile of chart and axis
 # format the labels as the tip suggests.
@@ -195,28 +197,33 @@ summary(Litter$plotID)
 14. Create a bar graph of functionalGroup counts. This shows you what type of litter is collected at the Niwot Ridge sites. Notice that litter types are fairly equally distributed across the Niwot Ridge sites.
 
 ```{r Bar Graph for functionalGroup Counts}
-# similar approach as #11, use ggplot and then add geom_bar as bar gragh, with X axis being functionalGroup
+# similar approach as #11, use ggplot and then add geom_bar as bar gragh
+# X axis being functionalGroup
 # y auto becomes Count.
 # add the tile of chart and axis
 ggplot(data = Litter, aes(x = functionalGroup)) +
   geom_bar() +
   labs(title = "Functional Group Counts", x = "FunctionalGroup", y = "Counts") +
   theme_minimal()
-# This graph shows that the Litter types are fairly distributed across Niwot Ridge sites, with Mixed lower than everyone else.
+# This graph shows that the Litter types are fairly distributed across Niwot Ridge sites,
+# with Mixed lower than everyone else.
 ```
 
 15. Using `geom_boxplot` and `geom_violin`, create a boxplot and a violin plot of dryMass by functionalGroup.
 
 ```{r Boxplot and Violin plot of Dry Mass by Functional Group}
-# similar approach as #11, use ggplot and then add geom_bar as boxplot, with X axis being functionalGroup
+# similar approach as #11, use ggplot and then add geom_bar as boxplot, 
+# X axis being functionalGroup
 # y be dryMass, since it asks for DryMass by Functional Group
 ggplot(Litter)+
   geom_boxplot(aes(x = functionalGroup, y = dryMass, group = cut_width(functionalGroup, 1))) +
   labs(title = "Dry Mass by Functional Group", x = "FunctionalGroup", y = "dryMass") + 
   theme_minimal()
-# keep other config the same and do the Violin plot, but also add quantiles as the previous lecture suggests
+# keep other config the same and do the Violin plot
+# also add quantiles as the previous lecture suggests
 ggplot(Litter)+
-  geom_violin(aes(x = functionalGroup, y = dryMass, group = cut_width(functionalGroup, 1)), draw_quantiles = c(0.25, 0.5, 0.75)) +
+  geom_violin(aes(x = functionalGroup, y = dryMass, group = cut_width(functionalGroup, 1)), 
+              draw_quantiles = c(0.25, 0.5, 0.75)) +
   labs(title = "Dry Mass by Functional Group", x = "FunctionalGroup", y = "dryMass") 
 
 ```
