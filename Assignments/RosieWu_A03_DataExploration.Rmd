@@ -39,8 +39,6 @@ library(tidyverse);library(lubridate); library(here)
 Neonics <- read.csv(here('Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv'), stringsAsFactors = TRUE)
 Litter <- read.csv(here('Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv'), stringsAsFactors = TRUE)
 # print out the dataframes
-Neonics
-Litter
 
 ```
 
