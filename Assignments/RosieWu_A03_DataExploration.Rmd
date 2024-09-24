@@ -100,7 +100,7 @@ summary(Neonics$Species.Common.Name, maxsum = 6)
 
 ```{r Classifying the Conc.1..Author column}
 # First manually view the dataframe and the specific column
-View(Neonics)
+# View(Neonics)
 # use class function to classify the column
 class(Neonics$Conc.1..Author.)
 # The return for the class should be factor
@@ -147,49 +147,84 @@ Interpret this graph. What are the most common test locations, and do they diffe
 
 [**TIP**: Add `theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))` to the end of your plot command to rotate and align the X-axis labels...]
 
-```{r}
+```{r Bar Graph with Endpoint counts}
+# similar approach as previous one, use ggplot and then add geom_bar as bar gragh, with X axis being Endpoints
+# y auto becomes Count.
+# add the tile of chart and axis
+# format the labels as the tip suggests.
 
+ggplot(data = Neonics, aes(x = Endpoint )) +
+  geom_bar() +
+  labs(title = "Endpoint Counts", x = "Endpoints", y = "Counts") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 ```
 
-> Answer:
+> Answer: The highest two counts fall under Enpoints LOEL and NOEL, which are Lowest-observable-effect-level-- "lowest dose (concentration) producing effects that were significantly different (as reported by authors) from responses of controls (LOEAL/LOEC)" and No-observable-effect-level -- "highest dose (concentration) producing effects not significantly  different from responses of controls according to author's reported statistical test". (quoted from ECOTOX_CodeAppendix)
+
 
 ## Explore your data (Litter)
 
 12. Determine the class of collectDate. Is it a date? If not, change to a date and confirm the new class of the variable. Using the `unique` function, determine which dates litter was sampled in August 2018.
 
-```{r}
-
-
+```{r Determine CollectDate}
+# first see the class of collectDate as variable
+class(Litter$collectDate)
+# The output of the class is factor, so need to convert this to date
+Litter$collectDate <- as.Date(Litter$collectDate, format = '%Y-%m-%d')
+# check again
+class(Litter$collectDate)
+# Use unique function to 
+unique(Litter$collectDate)
+# Answer for the dates that litter was sampled in August 2018 are 2018-08-02 and 2018-08-30.
 ```
 
 13. Using the `unique` function, determine how many different plots were sampled at Niwot Ridge. How is the information obtained from `unique` different from that obtained from `summary`?
 
-```{r}
-
+```{r Count number of Plots being sampled at Niwot Ridge}
+# using just unique function
+unique(Litter$plotID)
+# use summary for this column too
+summary(Litter$plotID)
 
 ```
 
-> Answer:
+> Answer: Unique function only listed out all PlotIDs and gave the list in its Descending order by count of the IDs, whereas the summary gave the Plot Ids by descending order along with its count.
 
 14. Create a bar graph of functionalGroup counts. This shows you what type of litter is collected at the Niwot Ridge sites. Notice that litter types are fairly equally distributed across the Niwot Ridge sites.
 
-```{r}
-
-
+```{r Bar Graph for functionalGroup Counts}
+# similar approach as #11, use ggplot and then add geom_bar as bar gragh, with X axis being functionalGroup
+# y auto becomes Count.
+# add the tile of chart and axis
+ggplot(data = Litter, aes(x = functionalGroup)) +
+  geom_bar() +
+  labs(title = "Functional Group Counts", x = "FunctionalGroup", y = "Counts") +
+  theme_minimal()
+# This graph shows that the Litter types are fairly distributed across Niwot Ridge sites, with Mixed lower than everyone else.
 ```
 
 15. Using `geom_boxplot` and `geom_violin`, create a boxplot and a violin plot of dryMass by functionalGroup.
 
-```{r}
-
+```{r Boxplot and Violin plot of Dry Mass by Functional Group}
+# similar approach as #11, use ggplot and then add geom_bar as boxplot, with X axis being functionalGroup
+# y be dryMass, since it asks for DryMass by Functional Group
+ggplot(Litter)+
+  geom_boxplot(aes(x = functionalGroup, y = dryMass, group = cut_width(functionalGroup, 1))) +
+  labs(title = "Dry Mass by Functional Group", x = "FunctionalGroup", y = "dryMass") + 
+  theme_minimal()
+# keep other config the same and do the Violin plot, but also add quantiles as the previous lecture suggests
+ggplot(Litter)+
+  geom_violin(aes(x = functionalGroup, y = dryMass, group = cut_width(functionalGroup, 1)), draw_quantiles = c(0.25, 0.5, 0.75)) +
+  labs(title = "Dry Mass by Functional Group", x = "FunctionalGroup", y = "dryMass") 
 
 ```
 
 Why is the boxplot a more effective visualization option than the violin plot in this case?
 
-> Answer:
+> Answer: From the visualization perspective, the boxplot is easier to read its quantiles, ranges, averages, and outliers, and it can be more easily understood as well. 
 
 What type(s) of litter tend to have the highest biomass at these sites?
 
-> Answer:
+> Answer: Needles tend to have highest biomass overall at these sites. This can be reflected from its range and average compared to others in the graph.
