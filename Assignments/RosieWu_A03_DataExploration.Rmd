@@ -38,7 +38,8 @@ library(tidyverse);library(lubridate); library(here)
 # now import the two csv files with read strings as factors in subcommands.
 Neonics <- read.csv(here('Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv'), stringsAsFactors = TRUE)
 Litter <- read.csv(here('Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv'), stringsAsFactors = TRUE)
-# print out the dataframes
+# check work directory
+here()
 
 ```
 
@@ -79,7 +80,7 @@ sort(summary(Neonics$Effect))
 ```
 
 > Answer: According to the sorted summary result, the Effect with highest values (top 3) are population, mortality, and behavior. 
- Why might these be of interest? Because they are the most fundamental measures of the health of a species. If a certain species has high population and low mortality rate, that means the species is surviving well (high birth or long lifespan and low death). Meanwhile, if the bahavior of a specie is changing in a noticeable pattern, then that means the effect may be significant as well. If the insecticide has siginificant effect on these aspects, then it means attention for this insecticide is needed.
+ Why might these be of interest? Because they are the most fundamental measures of the health of a species. If a certain species has lower population after the insectcide has been applied, that indicates the insecticides have negative impact on the reproduction of the species.When there is a high mortality rate, that means insectcides have been causing more deaths. Meanwhile, if the bahavior of a specie is changing in a noticeable pattern, then that means the effect may be significant as well. If the insecticide has siginificant effect on these aspects, then it means attention for this insecticide is needed.
 
 
 7.  Using the `summary` function, determine the six most commonly studied species in the dataset (common name). What do these species have in common, and why might they be of interest over other insects? Feel free to do a brief internet search for more information if needed.[TIP: Explore the help on the `summary()` function, in particular the `maxsum` argument...]
@@ -88,8 +89,9 @@ sort(summary(Neonics$Effect))
 # Summary function is still used.
 # Since we need the 6 most commonly studied species (or the top 6 max), an argument maxsum= 6 is added inside the summary function.
 summary(Neonics$Species.Common.Name, maxsum = 6)
-# summary(Neonics$Species.Common.Name, maxsum = 7)
-# I also used 7 to test out, since the most common is categorized as Other. But besides the "Other" all the other named 6 tops species are bees.
+summary(Neonics$Species.Common.Name, maxsum = 7)
+# I also used 7 to test out, since the most common is categorized as Other. 
+# But besides the "Other" all the other named 6 tops species are bees.
 ```
 
 > Answer: According to the output, all the top 6 species were bees. Compared to other species, bees tend to be classified as pollinators, especially honey and bumblebees. Pollinators are of interests over other insects, since they especially help with the reproductive process of plants and crops, which benefit the agriculture and ecosystems significantly.
@@ -221,7 +223,7 @@ ggplot(Litter)+
 
 Why is the boxplot a more effective visualization option than the violin plot in this case?
 
-> Answer: From the visualization perspective, the boxplot is easier to read its quantiles, ranges, averages, and outliers, and it can be more easily understood as well. 
+> Answer: From the visualization perspective, the boxplot is easier to read its quantiles, ranges, and outliers, and it can be more easily understood as well. 
 
 What type(s) of litter tend to have the highest biomass at these sites?
 
