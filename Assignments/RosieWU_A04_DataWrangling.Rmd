@@ -77,10 +77,10 @@ Answer: They all have same number of columns, which is 20, while they all have d
 
 ```{r questions 3 thru 6}
 #3 converting all the Date columns to date objects formatting
-EPAO3_2018$Date <- as.Date(EPAO3_2018$Date, format = '%Y-%m-%d')
-EPAO3_2019$Date <- as.Date(EPAO3_2019$Date, format = "%Y-%m-%d")
-EPAPM25_2018$Date <- as.Date(EPAPM25_2018$Date, format = "%Y-%m-%d")
-EPAPM25_2019$Date <- as.Date(EPAPM25_2019$Date, format = "%Y-%m-%d")
+EPAO3_2018$Date <- as.Date(EPAO3_2018$Date, format = "%m/%d/%Y")
+EPAO3_2019$Date <- as.Date(EPAO3_2019$Date, format = "%m/%d/%Y")
+EPAPM25_2018$Date <- as.Date(EPAPM25_2018$Date, format = "%m/%d/%Y")
+EPAPM25_2019$Date <- as.Date(EPAPM25_2019$Date, format = "%m/%d/%Y")
 
 #4 Select columns: Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE
 EPAO3_2018_q4 <- EPAO3_2018[c("Date", "DAILY_AQI_VALUE", "Site.Name", "AQS_PARAMETER_DESC", "COUNTY", "SITE_LATITUDE", "SITE_LONGITUDE")]
@@ -134,26 +134,36 @@ write.csv(EPAPM25_2019_q4, file.path(target_directory, "EPAair_PM25_NC2019_proce
 combined_set = rbind(EPAO3_2018_q4, EPAO3_2019_q4, EPAPM25_2018_q4, EPAPM25_2019_q4)
 
 #8 filter names in the Site.Name column
-combined_new_set <-
-  combined_set %>%
-  filter(Site.Name == "Linville Falls" | Site.Name == "Durham Armory" | Site.Name == "Leggett" 
-         | Site.Name == "Hattie Avenue" | Site.Name == "Clemmons Middle" 
-         | Site.Name == "Mendenhall School" | Site.Name == "Frying Pan Mountain"
-         | Site.Name == "West Johnston Co." | Site.Name == "Garinger High School"
-         | Site.Name== "Castle Hayne" | Site.Name == "Pitt Agri. Center"
-         | Site.Name == "Bryson City" | Site.Name == "Millbrook School")
+combined_new_set <- 
+  filter(combined_set, Site.Name %in% c("Linville Falls", 
+        "Durham Armory", "Leggett", "Hattie Avenue",  "Clemmons Middle", 
+        "Mendenhall School", "Frying Pan Mountain", "West Johnston Co.", 
+        "Garinger High School", "Castle Hayne", "Pitt Agri. Center", 
+        "Bryson City", "Millbrook School")) %>%
+  
+  # Use the split-apply-combine strategy to generate daily means: 
+  # group by date, site name, AQS parameter, and county. 
+  # Take the mean of the AQI value, latitude, and longitude.
+  group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>%
+  summarize(
+    mean_AQI = mean(DAILY_AQI_VALUE),
+    mean_latitude = mean(SITE_LATITUDE),
+    mean_longitude = mean(SITE_LONGITUDE)) %>%
+  # Add columns for "Month" and "Year" by parsing your "Date" column (hint: `lubridate` package)
+  mutate(Month = month(Date),  
+              Year = year(Date))
 
-#9 Use the split-apply-combine strategy to generate daily means: group by date, site name, AQS parameter, and county. Take the mean of the AQI value, latitude, and longitude.
+#9 Spread data sets so AQI values ozone and PM2.5 are in separate columns
+# name: AQS names (PM2.5 and ozone), values are AQI daily
+reshaped_set <- combined_new_set %>%
+  pivot_wider(names_from =  AQS_PARAMETER_DESC, 
+    values_from = mean_AQI)            
 
+#10 show the dimension of the new dataset
+dim(reshaped_set)
 
-# Add columns for "Month" and "Year" by parsing your "Date" column (hint: `lubridate` package)
-
-
-#10
-
-
-#11
-
+#11 save the current dataset to csv
+write.csv(reshaped_set, file.path(target_directory, "EPAair_O3_PM25_NC1819_Processed.csv"), row.names = FALSE)
 
 ```
 
@@ -166,16 +176,28 @@ combined_new_set <-
 
 ```{r questions 12 and 13}
 
-#12
+#12 summary datset: Data should be grouped by site, month, and year
+# mean AQI values for ozone and PM2.5 for each group
+# use drop_na to remove rows that "ozone" values are not available
+summary_set <- reshaped_set %>%
+  group_by(Year, Site.Name, Month) %>%
+  summarize(mean_Ozone = mean(Ozone),
+            mean_PM2.5 = mean(PM2.5)) %>%
+  drop_na(mean_Ozone)
 
+#13 Call dimensions of the summary dataset
+dim(summary_set)
 
-#13
-
-
-
+# try na.omit function rather than drop_na to observe
+summary_set_try <- reshaped_set %>%
+  group_by(Year, Site.Name, Month) %>%
+  summarize(mean_Ozone = mean(Ozone),
+            mean_PM2.5 = mean(PM2.5)) %>%
+  na.omit(mean_Ozone)
+dim(summary_set_try)
 ```
 
 14. Why did we use the function `drop_na` rather than `na.omit`? Hint: replace `drop_na` with `na.omit` in part 12 and observe what happens with the dimensions of the summary date frame.
 
-> Answer: 
+> Answer: After trying with na.omit and viewing the two summary datasets, it shows that drop_na for ozone will only drop rows with only "na" in Ozone column, whereas na.omit omits rows where there are NA present in general, including the PM2.5 column. Therefore, there are much less rows in the summary dataset after na.omit than the one after drop_na.
 
