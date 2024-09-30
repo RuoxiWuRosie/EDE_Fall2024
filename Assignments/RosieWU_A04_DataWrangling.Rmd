@@ -77,7 +77,7 @@ Answer: They all have same number of columns, which is 20, while they all have d
 
 ```{r questions 3 thru 6}
 #3 converting all the Date columns to date objects formatting
-EPAO3_2018$Date <- as.Date(EPAO3_2018$Date, format = "%Y-%m-%d")
+EPAO3_2018$Date <- as.Date(EPAO3_2018$Date, format = '%Y-%m-%d')
 EPAO3_2019$Date <- as.Date(EPAO3_2019$Date, format = "%Y-%m-%d")
 EPAPM25_2018$Date <- as.Date(EPAPM25_2018$Date, format = "%Y-%m-%d")
 EPAPM25_2019$Date <- as.Date(EPAPM25_2019$Date, format = "%Y-%m-%d")
@@ -89,8 +89,8 @@ EPAPM25_2018_q4 <- EPAPM25_2018[c("Date", "DAILY_AQI_VALUE", "Site.Name", "AQS_P
 EPAPM25_2019_q4 <- EPAPM25_2019[c("Date", "DAILY_AQI_VALUE", "Site.Name", "AQS_PARAMETER_DESC", "COUNTY", "SITE_LATITUDE", "SITE_LONGITUDE")]
 
 #5 fill all cells in AQS_PARAMETER_DESC with "PM2.5":
-EPAPM25_2018_q4$AQS_PARAMETER <- "PM2.5"
-EPAPM25_2019_q4$AQS_PARAMETER <- "PM2.5"
+EPAPM25_2018_q4$AQS_PARAMETER_DESC <- "PM2.5"
+EPAPM25_2019_q4$AQS_PARAMETER_DESC <- "PM2.5"
 
 #6 Save all four processed datasets in the Processed folder, keep all files 
 target_directory <- "/home/guest/EDE_Fall2024/Data/Processed"
@@ -130,13 +130,23 @@ write.csv(EPAPM25_2019_q4, file.path(target_directory, "EPAair_PM25_NC2019_proce
 11. Save your processed dataset with the following file name: "EPAair_O3_PM25_NC1819_Processed.csv"
 
 ```{r questions 7 thru 11}
-#7 
+#7 combine all of the four processed data sets, which all have 7 columns
+combined_set = rbind(EPAO3_2018_q4, EPAO3_2019_q4, EPAPM25_2018_q4, EPAPM25_2019_q4)
+
+#8 filter names in the Site.Name column
+combined_new_set <-
+  combined_set %>%
+  filter(Site.Name == "Linville Falls" | Site.Name == "Durham Armory" | Site.Name == "Leggett" 
+         | Site.Name == "Hattie Avenue" | Site.Name == "Clemmons Middle" 
+         | Site.Name == "Mendenhall School" | Site.Name == "Frying Pan Mountain"
+         | Site.Name == "West Johnston Co." | Site.Name == "Garinger High School"
+         | Site.Name== "Castle Hayne" | Site.Name == "Pitt Agri. Center"
+         | Site.Name == "Bryson City" | Site.Name == "Millbrook School")
+
+#9 Use the split-apply-combine strategy to generate daily means: group by date, site name, AQS parameter, and county. Take the mean of the AQI value, latitude, and longitude.
 
 
-#8 
-
-
-#9
+# Add columns for "Month" and "Year" by parsing your "Date" column (hint: `lubridate` package)
 
 
 #10
