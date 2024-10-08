@@ -82,13 +82,12 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 
 ```{r plot total P vs PO4}
 #4 build plot, y = tp_ug, x = po4 
-q4_plot <- ggplot(PeterPaul.chem.nutrients, aes(x = po4, y = tp_ug)) +
+q4_plot <- ggplot(PeterPaul.chem.nutrients, aes(x = po4, y = tp_ug, color = lakename)) +
   geom_point() +  # Scatter points
   geom_smooth(method = "lm", se = FALSE) +  # Line of best fit
   labs(title = "Total Phosphorus by Phosphate Concentration",
     x = "Phosphate (Po4)",
-    y = "Total Phosphorus (tp_ug)",
-    color = "Lake")+
+    y = "Total Phosphorus (tp_ug)")+
   xlim(0, 75) +  # Adjust x and y axis limits after viewing the plot first
   ylim(0, 200) +  mytheme
 
@@ -121,7 +120,7 @@ temp_plot <-
   theme_minimal()+
   theme(
     axis.title.x = element_blank(),  # Remove x-axis title
-    legend.position = "top")
+    legend.position = "right")
 print(temp_plot)
 
 
@@ -154,8 +153,8 @@ print(TN_plot)
 
 # use cowplot to combine all three plots
 library(cowplot)
-plot_grid(temp_plot, TP_plot, TN_plot, nrow = 3, align = 'h', 
-          rel_heights = c(1.25, 1, 1))
+plot_grid(temp_plot, TP_plot, TN_plot, nrow = 3, align = 'v',
+          rel_heights = c(5, 5, 5))
 
 ```
 
