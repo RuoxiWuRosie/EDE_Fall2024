@@ -6,9 +6,9 @@ output:
   pdf_document:
     toc: true
     toc_depth: 2
-    number_sections: true
     fig_caption: true
 ---
+\listoffigures
 
 ## Objectives:
 
@@ -115,11 +115,12 @@ summary_Ozone <- epa_data %>%
 ```{r echo=FALSE}
 # Create the first table, trying to get ride of auto-labeling by setting 'null"
 ## ???
+library(knitr)
 
-kable(summary_PM25, caption = "Table 1: Mean Particulates (2.5mm)", 
+knitr::kable(summary_PM25, caption = "Mean Particulates (2.5mm)", 
       label = NULL)
 # Create the second table
-kable(summary_Ozone, caption = "Table 2: Mean Ozone", 
+knitr::kable(summary_Ozone, caption = "Mean Ozone", 
       label = NULL)
 ```
 
@@ -127,9 +128,11 @@ kable(summary_Ozone, caption = "Table 2: Mean Ozone",
 
 ## Task 4: Plots
 
-Below this paragraph, but above the horizonal line (`---`), create two separate code chunks that create boxplots of the distribution of Ozone levels by month using, one for only records collected in 2018 and one for records in 2019. Customize the chunk options such that the final figures are displayed but not the code used to generate the figures. In addition, align the plots on the left side of the page and set the figure heights so both plots fit on the same page with minimal space remaining. Lastly, add a `fig.cap` chunk option to add a caption (title) to your plot that will display underneath the figure.
+Below this paragraph, but above the horizontal line (`---`), create two separate code chunks that create boxplots of the distribution of Ozone levels by month using, one for only records collected in 2018 and one for records in 2019. Customize the chunk options such that the final figures are displayed but not the code used to generate the figures. In addition, align the plots on the left side of the page and set the figure heights so both plots fit on the same page with minimal space remaining. Lastly, add a `fig.cap` chunk option to add a caption (title) to your plot that will display underneath the figure.
 
-```{r, echo=FALSE, fig.cap="Distribution of Ozone Levels by Month 2018", fig.height=4, fig.width=6}
+```{r, echo=FALSE, warning = FALSE, message = FALSE, fig.cap="Distribution of Ozone Levels by Month 2018", fig.height=4,fig.width=6}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
 library(ggplot2)
 
 # Filter data for 2018
@@ -152,7 +155,7 @@ print(p1)
 ```
 
 
-```{r, echo=FALSE, fig.cap="Distribution of Ozone Levels by Month 2019", fig.height=4,fig.width=6}
+```{r, echo=FALSE, warning = FALSE, message = FALSE, fig.cap="Distribution of Ozone Levels by Month 2019", fig.height=4,fig.width=6}
 
 # Filter data for 2019
 data_2019 <- epa_data %>% 
