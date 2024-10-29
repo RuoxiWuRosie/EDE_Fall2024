@@ -134,34 +134,17 @@ Let's tackle a similar question from a different approach. Here, we want to expl
 # Fit the full model with all predictors
 full_model <- lm(temperature_C ~ year4 + daynum + depth, 
                  data = NTL_LTER_chem_phy.July)
-aic_full <- AIC(full_model)
 
-# Fit models with combinations of predictors
-model1 <- lm(temperature_C ~ year4, data = NTL_LTER_chem_phy.July)
-model2 <- lm(temperature_C ~ daynum, data = NTL_LTER_chem_phy.July)
-model3 <- lm(temperature_C ~ depth, data = NTL_LTER_chem_phy.July)
-model4 <- lm(temperature_C ~ year4 + daynum, data = NTL_LTER_chem_phy.July)
-model5 <- lm(temperature_C ~ year4 + depth, data = NTL_LTER_chem_phy.July)
-model6 <- lm(temperature_C ~ daynum + depth, data = NTL_LTER_chem_phy.July)
-
-# Store AIC values
-aic_values <- data.frame(
-  Model = c("year4", "daynum", "depth", 
-            "year4 + daynum", "year4 + depth", "daynum + depth", "full_model"),
-  AIC = c(AIC(model1), AIC(model2), AIC(model3), 
-           AIC(model4), AIC(model5), AIC(model6), aic_full)
-)
-
-# Print AIC values
-print(aic_values)
-
-# Find the model with the lowest AIC
-best_model <- aic_values[which.min(aic_values$AIC),]
-print(paste("Best Model:", best_model$Model, "with AIC:", best_model$AIC))
-
-# According to the results, full_model with all the predictor 
-# variables included seem to give the best result and is best suited for prediction.
-
+# step
+step(full_model)
+summary(full_model)
+# According to the results, full_model with all the predictor variables
+# seem to give the best result and is best suited for prediction, since the 
+# lowest AIC value occurs at "none" with all of the variables included.
+# When taking out one each variable, the AIC value increases a little, and
+# depth being dropped causing the highest increase in AIC.
+# Also from the results summary, it shows all p-value < 0.05 or 0.01, which means
+# they are all significant variables for the regression.
 
 #10
 # Fit the multiple regression model with the 3 variables determined earlier
@@ -185,20 +168,56 @@ summary(multiple_regression_model)
 
 ```{r anova.model}
 #12
+# anova
+# Run ANOVA model
+anova_model <- aov(temperature_C ~ lakename, data = NTL_LTER_chem_phy.July)
 
+# Print ANOVA summary
+summary(anova_model)
+
+# Format ANOVA as lm (linear)
+anova2_linear <- lm(temperature_C ~ lakename, data = NTL_LTER_chem_phy.July)
+
+# Print summary of linear model
+summary(anova2_linear)
 
 ```
 
 13. Is there a significant difference in mean temperature among the lakes? Report your findings. 
 
-> Answer: 
+> Answer: The F-stat is 50 on 8 and 9719 degrees of freedom,  p-value: < 2.2e-16. Since it has a high F-stat and low, close to 0 p-value, it means we can reject the null of no significant difference in mean temperature among lakes.
 
 
 
 14. Create a graph that depicts temperature by depth, with a separate color for each lake. Add a geom_smooth (method = "lm", se = FALSE) for each lake. Make your points 50 % transparent. Adjust your y axis limits to go from 0 to 35 degrees. Clean up your graph to make it pretty. 
 
 ```{r scatterplot.2}
-#14.
+#14.Similar to the first scatterplot done previously, but change colors
+# Create the plot
+NTL_LTER_July_plot_2 <- ggplot(NTL_LTER_chem_phy.July, aes(x = depth, 
+                                      y = temperature_C, color = lakename)) +
+  # Plot points with 50% transparency
+  geom_point(alpha = 0.5) +
+  # Add linear regression lines for each lake
+  geom_smooth(method = "lm", se = FALSE) +
+  # Set y-axis limits
+  ylim(0, 35) +
+  # Customize labels
+  labs(
+    title = "Temperature by Depth in July",
+    x = "Depth (m)",
+    y = "Temperature (°C)",
+    color = "Lake Name"
+  ) +
+  # Apply a clean theme
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "right"
+  )
+
+# Print the plot
+print(NTL_LTER_July_plot_2)
 
 
 ```
@@ -207,26 +226,39 @@ summary(multiple_regression_model)
 
 ```{r tukey.test}
 #15
-
-
+# Post-hoc test
+# TukeyHSD() computes Tukey Honest Significant Differences, use anova model
+TukeyHSD(anova_model)
+# Extract groupings for pairwise relationships
+anova_model.groups <- HSD.test(anova_model, "lakename", group = TRUE)
+anova_model.groups
+# Results listed would be lakes ground by different means of Temperature_C
 ```
 
 16.From the findings above, which lakes have the same mean temperature, statistically speaking, as Peter Lake? Does any lake have a mean temperature that is statistically distinct from all the other lakes?
 
->Answer:
+>Answer: Observing the mean groups listed for each lake, Paul lake seems to have similar mean as Peter Lake. Also, according to the groups, none of the groups are completely distinct from all other groups, and each of them has a mean kind of related/ close to at least one other group, so there is no lake with a mean temperature that is statistically distinct from all the other lakes.
 
  
 
 17. If we were just looking at Peter Lake and Paul Lake. What's another test we might explore to see whether they have distinct mean temperatures? 
 
->Answer: 
+>Answer: The t-test hypothesis testing can help explore whether they have distinct mean temperatures.
 
 
 
 18. Wrangle the July data to include only records for Crampton Lake and Ward Lake. Run the two-sample T-test on these data to determine whether their July temperature are same or different. What does the test say? Are the mean temperatures for the lakes equal? Does that match you answer for part 16?
 
 ```{r t.test}
+July_CW <- NTL_LTER_chem_phy.July %>%
+  filter(lakename %in% c("Crampton Lake", "Ward Lake"))
+# Run two-sample T-test on temperature by lake
+t_test_result <- t.test(
+  temperature_C ~ lakename,
+  data = July_CW)
 
+# Print the T-test result
+print(t_test_result)
 ```
 
->Answer: 
+>Answer: According to the t-test result, the t-stat for hypothesis testing whether means of Crampton and Ward have statistical difference is 1.1298, which is lower than the t-stat for 95% confidence level, and the p-value is 0.2592, which is much higher than 0.05. Therefore, we cannot reject the null of no statistical difference between the means of the two lakes. 
