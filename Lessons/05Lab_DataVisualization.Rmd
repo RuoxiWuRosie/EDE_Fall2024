@@ -112,7 +112,6 @@ PeterPaul.chem.nutrients$month <- factor(PeterPaul.chem.nutrients$month,
                                          levels = 1:12,
                                          labels = month.abb)
 
-
 #Try again: Plot how many Lake observations occur each month
 PeterPaul.chem.nutrients %>%
   ggplot()+

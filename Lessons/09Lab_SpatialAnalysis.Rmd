@@ -41,7 +41,7 @@ library(tidyverse);library(here);
 library(sf);library(mapview);library(leaflet)
 
 #A new package: arcgis -- discussed below
-#install.packages('arcgis')
+install.packages('arcgis')
 library(arcgis)
 
 #Check the working directory
@@ -75,7 +75,6 @@ data_source <- paste0(
   'https://services.nconemap.gov/secure/rest/services/',
   'NC1Map_Hazardous_Waste/MapServer/4/',
   'query?outFields=*&where=1%3D1&f=geojson')
-
 gas_plants <- st_read(data_source)
 
 mapview(gas_plants)
