@@ -1,8 +1,12 @@
 ---
-title: 'A06 - Crafting Reports'
-author: "Rosie Wu" 
+title: "A06 - Crafting Reports"
+author: "Rosie Wu"
 date: "Fall 2024"
 output:
+  html_document:
+    toc: true
+    toc_depth: '2'
+    df_print: paged
   pdf_document:
     toc: true
     toc_depth: 2

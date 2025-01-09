@@ -82,7 +82,8 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 
 ```{r plot total P vs PO4}
 #4 build plot, y = tp_ug, x = po4 
-q4_plot <- ggplot(PeterPaul.chem.nutrients, aes(x = po4, y = tp_ug, color = lakename)) +
+q4_plot <- ggplot(PeterPaul.chem.nutrients, aes(x = po4, y = tp_ug, 
+                                                color = lakename)) +
   geom_point() +  # Scatter points
   geom_smooth(method = "lm", se = FALSE) +  # Line of best fit
   labs(title = "Total Phosphorus by Phosphate Concentration",

@@ -225,13 +225,18 @@ water_withdraw_Asheville_2015 <- scrape.it('01-11-010', 2015)
 water_withdraw_Asheville_2015
 #Convert to date format
 water_withdraw_Asheville_2015$Date <- my(water_withdraw_Asheville_2015$Date)
-# plot it
-water_withdraw_Asheville_2015 %>%
-  ggplot(aes(x=Date, y=MGD)) +
+
+# create a combined dataframe for Asheville and Durham
+combined_set <- rbind(water_withdraw_Asheville_2015, water_withdraw_Durham_2015)
+
+# plot the combined data
+combined_set %>%
+  ggplot(aes(x=Date, y=MGD, color = Water_System_Name)) +
   geom_line()+
-  labs(title = "Max Daily Withdrawls for Asheville",
+  labs(title = "Max Daily Withdrawls for Asheville and Durham",
        x = "Month",
-    y = "Maximum Daily Use (MGD)")
+       y = "Maximum Daily Use (MGD)",
+       color = "Water_System_Name")
 
 ```
 
@@ -242,10 +247,22 @@ water_withdraw_Asheville_2015 %>%
 
 ```{r fetch.and.plot.Asheville.multiyear.data }
 #9 
-
+the_years <- c(2018:2022)
+Ash_years_combined <- map2('01-11-010',the_years,scrape.it) 
+# Asheville over years
+Ash_years_combined <- bind_rows(Ash_years_combined)
+Ash_years_combined$Date <- my(Ash_years_combined$Date)
+#Plot
+Ash_years_combined %>%
+  ggplot(aes(x=Date, y=MGD)) +
+  geom_line()+
+  geom_smooth(method="loess",se=FALSE)+
+  labs(title = "Max Daily Withdrawls for Ashville 2018-2022",
+       x = "Year",
+    y = "Maximum Daily Use (MGD)")
 
 ```
 
 Question: Just by looking at the plot (i.e. not running statistics), does Asheville have a trend in water usage over time?
 > Answer:
->
+> In general, the water use over time has a increasing trend over year 2018-2022. There is a decrease/ drop right after year 2020, this can potentially be due to decrease in general activities around the time of Covid. Meanwhile, if we were to focus on trend within each year, the water use is highest around late summer or early fall, which is when resdients tend to have more outdoor activities and shower more to use more water.
